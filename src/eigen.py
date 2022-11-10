@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 
-testArr = np.random.randint(0,256, size=(256,256))#/np.random.randint(1,500,size=(2,2))
+# testArr = np.random.randint(0,256, size=(256,256))#/np.random.randint(1,500,size=(2,2))
 # testArr = np.array(([3,2,3,2],
 #                     [5,1,5,4],
 #                     [9,3,2,1],
@@ -38,16 +38,16 @@ def getEigen(A):
     return currentDiag, v
 
 # print(testArr)
-print(" \n")
-# print(testArr)
-q, vec = getEigen(testArr)
-# print(np.sum(q))
-# print(q)
-print(np.sum(vec))
-# print(vec)
+# print(" \n")
+# # print(testArr)
+# q, vec = getEigen(testArr)
+# # print(np.sum(q))
+# # print(q)
+# print(np.sum(vec))
+# # print(vec)
 
-val, vector = np.linalg.eig(testArr)
-# print(np.sum(val))
-# print(val)
-print(np.sum(vector))
-# print(vector)
+# val, vector = np.linalg.eig(testArr)
+# # print(np.sum(val))
+# # print(val)
+# print(np.sum(vector))
+# # print(vector)
