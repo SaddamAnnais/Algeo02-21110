@@ -38,5 +38,6 @@ def predict(dirGambar, mean, E, Y, D, dataset, nama):
     print(idxHasil)
     cv2.imshow("hasil", matHasil.reshape(256,256))
     cv2.waitKey(0)  
+    return idxHasil
 
-predict("gal gadot90_1846.jpg", mean, E, Y, D, dataset, nama)
+# predict("gal gadot85_1842.jpg", mean, E, Y, D, dataset, nama)
