@@ -54,7 +54,7 @@ class App(customtkinter.CTk):
         self.frame_left.grid_rowconfigure((1,4,5), weight=0)  
         self.frame_left.grid_rowconfigure(3, minsize=100)    # empty row with minsize as spacing
         self.frame_left.grid_rowconfigure(7, minsize=100)    # empty row with minsize as spacing
-        self.frame_left.grid_rowconfigure(11, minsize=100)    # empty row with minsize as spacing
+        self.frame_left.grid_rowconfigure(10, minsize=100)    # empty row with minsize as spacing
 
         self.label_dataSet = customtkinter.CTkLabel(master=self.frame_left,
                                               text="Insert Your DataSet",
@@ -264,7 +264,7 @@ class App(customtkinter.CTk):
                 idx = predictFace.predict(filename_imageRecognize, mean, E, Y, D, dataset, nama)
                 end = time.time()
                 global result_image 
-                result_image = dataset[idx]
+                result_image = dataset[idx].reshape(256,256)
                 result_image = Image.fromarray(result_image)
                 result_image = ImageTk.PhotoImage(image = result_image.resize((256,256), Image.NEAREST))
                 self.image_imageResult.configure(image=result_image)
