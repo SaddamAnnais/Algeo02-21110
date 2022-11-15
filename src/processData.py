@@ -52,16 +52,17 @@ cv2.waitKey(0)
 ## We first compute AT @ A that have a shape of (M, M) M : Number of sample in dataset
 ## After that we need to compute A @ eigvec to get the largest M eigenvectors of covariant
 cov = np.cov(A.T)
-eigval, eigvec = np.linalg.eig(cov)
+eigval, eigvec = getEigen(cov, 1)
+# eigval, eigvec = np.linalg.eig(cov)
 # eigval, eigvec = np.linalg.eig(A.T @ A)
 eigvec = A @ eigvec
 
 ## 90 % of the total variance of eigenvectors contain in the first 10% of the largest corresponding eigenvalue
 ## Because of that, we need to sort the eigenvalues and eigenvectors
-## After that, we need to take 20% (rule of thumb) of all the eigenvector 
+## After that, we need to take 30% (rule of thumb) of all the eigenvector 
 eigpairs = [(eigval[idx], eigvec[:,idx]) for idx in range(len(eigval))]
 
-D = (20 * len(eigpairs))//100
+D = (30 * len(eigpairs))//100
 # D = len(eigpairs)
 
 eigpairs.sort(reverse=True)
@@ -79,6 +80,13 @@ for i in range(E.shape[1]):
 # E = E*255
 # print(E[:,1])
 # E = E.astype(np.uint8)
+
+cv2.imshow("Eigface1", E[:,0].reshape(256,256))
+cv2.imshow("Eigface2", E[:,2].reshape(256,256))
+cv2.imshow("Eigface3", E[:,3].reshape(256,256))
+cv2.imshow("Eigface-2", E[:,D-2].reshape(256,256))
+cv2.imshow("Eigface-1", E[:,D-1].reshape(256,256))
+cv2.waitKey(0)
 
 # Calculating weight of train image
 Y = E.T @ A

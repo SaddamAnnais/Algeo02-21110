@@ -39,4 +39,4 @@ def predict(dirGambar, mean, E, Y, D, dataset, nama):
     cv2.imshow("hasil", matHasil.reshape(256,256))
     cv2.waitKey(0)  
 
-predict("gal gadot90_1846.jpg", mean, E, Y, D, dataset, nama)
+predict("test\Emma Watson88_2041.jpg", mean, E, Y, D, dataset, nama)

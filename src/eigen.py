@@ -12,9 +12,9 @@ import copy
 #                     [164,182,143]))
 
 # testArr = testArr @ np.transpose(testArr)
-def getEigen(A):
+def getEigen(matrix, tolerance):
     # mengembalikan eigen value dan eigenvector menggunakan QR algorithm
-    E = copy.deepcopy(A)
+    E = copy.deepcopy(matrix)
     q,r = np.linalg.qr(E); v = q; count = 1
     
     while True:
@@ -29,7 +29,7 @@ def getEigen(A):
 
         if count % 200 == 0:
             print(count)
-        if np.allclose(prevDiag, currentDiag, atol=0.01) or count == 1500 :
+        if np.allclose(prevDiag, currentDiag, atol=tolerance) or count == 4000 :
             print(count)
             # print(E)
             break
