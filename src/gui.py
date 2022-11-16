@@ -7,6 +7,7 @@ import cv2
 import predictFace
 import numpy as np
 import time
+import processData 
 
 customtkinter.set_appearance_mode("System") 
 customtkinter.set_default_color_theme("blue")  
@@ -210,6 +211,8 @@ class App(customtkinter.CTk):
             if filename_imageDataSet != "":
                 statusDataset = True
                 self.label_datasetStatus.configure(text="Dataset selected", fg="green")
+                self.createEigenFace()
+
         elif value == 2:
             statusImage = False
             filename_imageRecognize = filedialog.askopenfilename(
@@ -222,6 +225,14 @@ class App(customtkinter.CTk):
                 global test_img
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
+
+    def createEigenFace(self):
+        self.label_datasetStatus.configure(text="Creating eigenfaces...", fg="blue")
+        self.label_datasetStatus.update()
+        global eigenfaces
+        # fungsi eigen argumen = filename_imageDataSet
+        self.label_datasetStatus.configure(text="Eigenfaces created", fg="green")
+
         
     # num_of_click = 0
     def imageWebcam(self):
@@ -299,10 +310,8 @@ class App(customtkinter.CTk):
         except:
             tkinter.messagebox.showerror("Error", "Please select dataset and image to recognize")
 
-
     def on_closing(self, event=0):
         self.destroy()
-
 
 if __name__ == "__main__":
     app = App()
