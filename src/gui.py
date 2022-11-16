@@ -204,9 +204,8 @@ class App(customtkinter.CTk):
         global filename_imageDataSet, filename_imageRecognize
         if value == 1:
             statusDataset = False
-            filename_imageDataSet = filedialog.askopenfilenames(
+            filename_imageDataSet = filedialog.askdirectory(
             initialdir=cwd,
-            filetypes=(("Image File", "*.jpg"), ("All Files", "*.*")),
             title="Select data set directory")
             if filename_imageDataSet != "":
                 statusDataset = True

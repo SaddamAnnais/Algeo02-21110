@@ -13,8 +13,8 @@ dataset = np.load('src/dataset.npy')
 def predict(dirGambar, mean, E, Y, D, dataset, nama): 
     D = D[0]
     newFace = read_image(dirGambar)
-    cv2.imshow("test", newFace.reshape((256,256)))
-    cv2.waitKey(0)
+    # cv2.imshow("test", newFace.reshape((256,256)))
+    # cv2.waitKey(0)
 
     newFace = (newFace - mean).reshape(256*256,1)
     newWeight = E.T @ newFace
