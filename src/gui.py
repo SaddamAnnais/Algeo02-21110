@@ -7,6 +7,7 @@ import cv2
 import predictFace
 import numpy as np
 import time
+import processData 
 
 customtkinter.set_appearance_mode("System") 
 customtkinter.set_default_color_theme("blue")  
@@ -24,6 +25,12 @@ class App(customtkinter.CTk):
 
     WIDTH = 1280
     HEIGHT = 720
+    global click
+    click = 0
+    global webcamStatus
+    webcamStatus = False
+    global defaultDataSet
+    defaultDataSet = True
 
     def __init__(self):
         super().__init__()
@@ -94,14 +101,19 @@ class App(customtkinter.CTk):
                                                 command=self.showImage)
         self.button_compare.grid(row=9, column=0, pady=5, padx=10)
 
+        self.button_defaultDataSet = customtkinter.CTkButton(master=self.frame_left,
+                                                text="Use default Dataset",
+                                                command=self.useDefault)
+        self.button_defaultDataSet.grid(row=10, column=0, pady=5, padx=10)
+
         self.label_webcam = customtkinter.CTkLabel(master=self.frame_left,
                                                     text="Webcam",
                                                     text_font=("Roboto Medium", -16))  
         self.label_webcam.grid(row=11, column=0, pady=5, padx=70)
 
         self.button_webcam = customtkinter.CTkButton(master=self.frame_left,
-                                                text="Open webcam",
-                                                command=self.webcam)
+                                                text="Start webcam",
+                                                command=self.imageWebcam)
         self.button_webcam.grid(row=12, column=0, pady=5, padx=10)
 
         # ============ frame_right ============
@@ -194,13 +206,14 @@ class App(customtkinter.CTk):
         global filename_imageDataSet, filename_imageRecognize
         if value == 1:
             statusDataset = False
-            filename_imageDataSet = filedialog.askopenfilenames(
+            filename_imageDataSet = filedialog.askdirectory(
             initialdir=cwd,
-            filetypes=(("Image File", "*.jpg"), ("All Files", "*.*")),
             title="Select data set directory")
             if filename_imageDataSet != "":
                 statusDataset = True
                 self.label_datasetStatus.configure(text="Dataset selected", fg="green")
+                self.createEigenFace()
+
         elif value == 2:
             statusImage = False
             filename_imageRecognize = filedialog.askopenfilename(
@@ -213,7 +226,32 @@ class App(customtkinter.CTk):
                 global test_img
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
+
+    def createEigenFace(self):
+        self.label_datasetStatus.configure(text="Creating eigenfaces...", fg="blue")
+        self.label_datasetStatus.update()
+        global eigenfaces
+        # fungsi eigen argumen = filename_imageDataSet
+        self.label_datasetStatus.configure(text="Eigenfaces created", fg="green")
+
         
+    # num_of_click = 0
+    def imageWebcam(self):
+        global click
+        global webcamStatus
+        click += 1
+        if click % 2 == 1:
+            webcamStatus = True
+            global cap
+            cap = cv2.VideoCapture(0)
+            self.frame()
+            self.button_webcam.configure(text="Close Webcam")
+        else:
+            webcamStatus = False
+            self.button_webcam.configure(text="Start Webcam")
+            cap.release()
+            self.image_imageTest.configure(image=self.default_img)
+
     def webcam(self):
         global window
         window = customtkinter.CTkToplevel(self)
@@ -239,23 +277,22 @@ class App(customtkinter.CTk):
         cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
         img = Image.fromarray(cv2image)
         # Convert image to PhotoImage
-        imgtk = ImageTk.PhotoImage(image = img)
-        cam.configure(image=imgtk)
+        imgtk = ImageTk.PhotoImage(image = img.resize((256,256)))
+        self.image_imageTest.configure(image=imgtk)
         # Repeat after an interval to capture continiously
-        cam.after(10,self.frame())
-
-    def webcam_start(self):
-        self.frame()
-
-    def webcam_close(self):
-        cap.release()
-        window.destroy()
+        # self.image_imageTest.after(10,self.frame())
 
     def loadImage(self,img_dir,img_size):
         img = Image.open(img_dir)
         img = img.resize((img_size, img_size), Image.NEAREST)
         img = ImageTk.PhotoImage(img)
         return img
+
+    def useDefault(self):
+        global statusDataset, statusImage
+        statusDataset = True
+        statusImage = True
+        self.label_datasetStatus.configure(text="Dataset selected", fg="green")
 
     def showImage(self):
         try:
@@ -274,10 +311,8 @@ class App(customtkinter.CTk):
         except:
             tkinter.messagebox.showerror("Error", "Please select dataset and image to recognize")
 
-
     def on_closing(self, event=0):
         self.destroy()
-
 
 if __name__ == "__main__":
     app = App()
