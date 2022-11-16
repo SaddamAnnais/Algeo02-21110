@@ -1,26 +1,33 @@
 import numpy as np
 import copy
 
-# testArr = np.random.randint(0,256, size=(256,256))#/np.random.randint(1,500,size=(2,2))
-# testArr = np.array(([3,2,3,2],
-#                     [5,1,5,4],
-#                     [9,3,2,1],
-#                     [4,5,6,7]))
+def qr(A):
+    len = A.shape[0]
+    Q = np.identity(len)
+    for i in range(len):
+        H = np.identity(len)
+        H[i:, i:] = make_householder(A[i:, i])
+        Q = np.dot(Q, H)
+        A = np.dot(H, A)
+    return Q, A
 
-# testArr = np.array(([158,235,243],
-#                     [238,64,40],
-#                     [164,182,143]))
+def make_householder(a):
+    e = np.zeros_like(a)
+    e[0] = 1
+    v = a + np.copysign(np.linalg.norm(a), a[0])*e
+    H = np.identity(a.shape[0])
+    H -= (2 / np.dot(v, v)) * np.dot(v[:, None], v[None, :])
+    return H
 
-# testArr = testArr @ np.transpose(testArr)
 def getEigen(matrix, tolerance):
     # mengembalikan eigen value dan eigenvector menggunakan QR algorithm
     E = copy.deepcopy(matrix)
-    q,r = np.linalg.qr(E); v = q; count = 1
+    q,r = qr(E); v = q; count = 1
     
     while True:
         prevDiag = np.diagonal(E)
         E = np.matmul(r,q)
-        q,r = np.linalg.qr(E)
+        q,r = qr(E)
         
         count+=1
         v = np.matmul(v,q)
@@ -33,21 +40,4 @@ def getEigen(matrix, tolerance):
             print(count)
             # print(E)
             break
-    
-
     return currentDiag, v
-
-# print(testArr)
-# print(" \n")
-# # print(testArr)
-# q, vec = getEigen(testArr)
-# # print(np.sum(q))
-# # print(q)
-# print(np.sum(vec))
-# # print(vec)
-
-# val, vector = np.linalg.eig(testArr)
-# # print(np.sum(val))
-# # print(val)
-# print(np.sum(vector))
-# # print(vector)

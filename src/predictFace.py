@@ -10,11 +10,11 @@ D = np.load('src/D.npy')
 dataset = np.load('src/dataset.npy')
 
 # Predict new face
-def predict(dirGambar, mean, E, Y, D, dataset, nama): 
+def predict(dirGambar, mean, E, Y, D): 
     D = D[0]
     newFace = read_image(dirGambar)
-    cv2.imshow("test", newFace.reshape((256,256)))
-    cv2.waitKey(0)
+    # cv2.imshow("test", newFace.reshape((256,256)))
+    # cv2.waitKey(0)
 
     newFace = (newFace - mean).reshape(256*256,1)
     newWeight = E.T @ newFace
@@ -31,12 +31,8 @@ def predict(dirGambar, mean, E, Y, D, dataset, nama):
             idxHasil = i
             selisih = tempSelisih
             print(selisih)
+ 
+    return idxHasil
 
-    # print(idxHasil)
-    matHasil = dataset[idxHasil]
-    print(nama[idxHasil])
-    print(idxHasil)
-    cv2.imshow("hasil", matHasil.reshape(256,256))
-    cv2.waitKey(0)  
-
-predict("test\Emma Watson88_2041.jpg", mean, E, Y, D, dataset, nama)
+# if __name__ == "__main__":
+#     predict("test\Emma Watson88_2041.jpg", mean, E, Y, D, dataset, nama)

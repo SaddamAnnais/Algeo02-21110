@@ -12,6 +12,13 @@ cwd = os.getcwd()
 path = glob.glob(cwd + "/datasetSmall/*.jpg")
 
 # Flatvector images
+dataset_raw = []
+for img in path:
+    raw_img = cv2.imread(img)
+    raw_img = cv2.resize(raw_img, (256, 256))
+    dataset_raw.append(raw_img)
+
+# Flatvector images
 dataset = []
 nama = []
 for img in path:
@@ -99,3 +106,4 @@ np.save('src/nama.npy', nama)
 np.save('src/dataset.npy', dataset)
 np.save('src/mean.npy', mean)
 np.save('src/D.npy', D)
+np.save('src/dataset_raw.npy', dataset_raw)
