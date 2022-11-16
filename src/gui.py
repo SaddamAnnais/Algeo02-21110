@@ -203,16 +203,17 @@ class App(customtkinter.CTk):
         
     def chooseFile(self,value):
         global statusDataset, statusImage
-        global filename_imageDataSet, filename_imageRecognize
+        global folder_imageDataSet, filename_imageRecognize
         if value == 1:
             statusDataset = False
-            filename_imageDataSet = filedialog.askdirectory(
+            folder_imageDataSet = filedialog.askdirectory(
             initialdir=cwd,
             title="Select data set directory")
-            if filename_imageDataSet != "":
+            if folder_imageDataSet != "":
+                print(folder_imageDataSet)
                 statusDataset = True
                 self.label_datasetStatus.configure(text="Dataset selected", fg="green")
-                self.createEigenFace()
+                self.createEigenFaceGUI(folder_imageDataSet)
 
         elif value == 2:
             statusImage = False
@@ -227,12 +228,15 @@ class App(customtkinter.CTk):
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
 
-    def createEigenFace(self):
+    def createEigenFaceGUI(self, folderName):
         self.label_datasetStatus.configure(text="Creating eigenfaces...", fg="blue")
         self.label_datasetStatus.update()
-        global eigenfaces
+        start = time.time()
+        processData.processDataset(folderName)
+        end = time.time()
         # fungsi eigen argumen = filename_imageDataSet
-        self.label_datasetStatus.configure(text="Eigenfaces created", fg="green")
+        time_elapsed = end - start
+        self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="green")
 
         
     # num_of_click = 0

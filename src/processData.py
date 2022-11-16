@@ -8,8 +8,8 @@ from utils import *
 
 def processDataset(folderName):
     # Get current working directory
-    cwd = os.getcwd()
-    path = glob.glob(cwd + "/" + folderName + "/*.jpg")
+    # cwd = os.getcwd()
+    path = glob.glob(folderName + "/*.jpg")
 
     # Flatvector images
     dataset_raw = []
@@ -111,3 +111,6 @@ def processDataset(folderName):
     np.save('src/mean.npy', mean)
     np.save('src/D.npy', D)
     np.save('src/dataset_raw.npy', dataset_raw)
+
+if __name__ == "__main__":
+    processDataset("dataset")
