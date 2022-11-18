@@ -9,7 +9,7 @@ import numpy as np
 import time
 import processData 
 
-customtkinter.set_appearance_mode("System") 
+customtkinter.set_appearance_mode("Dark") 
 customtkinter.set_default_color_theme("blue")  
 
 cwd = os.getcwd()
@@ -92,7 +92,7 @@ class App(customtkinter.CTk):
         self.label_datasetStatus = customtkinter.CTkLabel(master=self.frame_left,
                                                 text="Dataset not selected",
                                                 text_font=("Roboto Medium", -16),
-                                                fg="red")
+                                                fg="dark red")
         self.label_datasetStatus.grid(row=4, column=0, pady=10, padx=10)
 
         self.label_insertImage = customtkinter.CTkLabel(master=self.frame_left,
@@ -108,7 +108,7 @@ class App(customtkinter.CTk):
         self.label_imageStatus = customtkinter.CTkLabel(master=self.frame_left,
                                                 text="Image not selected",  
                                                 text_font=("Roboto Medium", -16),
-                                                fg="red")
+                                                fg="dark red")
         self.label_imageStatus.grid(row=8, column=0, pady=10, padx=10)
 
         self.button_compare = customtkinter.CTkButton(master=self.frame_left,
@@ -195,7 +195,7 @@ class App(customtkinter.CTk):
         self.label_resultName = customtkinter.CTkLabel(master=self.frame_result,
                                                         text="None",
                                                         text_font=("Roboto Medium", -16),
-                                                        fg="red")
+                                                        fg="dark red")
         self.label_resultName.grid(row=1, column=0, pady=10, padx=20)
 
 
@@ -207,11 +207,8 @@ class App(customtkinter.CTk):
         self.label_timeValue = customtkinter.CTkLabel(master=self.frame_result,
                                                         text="0.00",
                                                         text_font=("Roboto Medium", -16),
-                                                        fg="red")
+                                                        fg="dark red")
         self.label_timeValue.grid(row=1, column=1, pady=10, padx=20)
-
-        # ============ webcam ============
-        
         
     def chooseFile(self,value):
         global statusDataset, statusImage
@@ -225,7 +222,7 @@ class App(customtkinter.CTk):
             title="Select data set directory")
             if folder_imageDataSet != "":
                 statusDataset = True
-                self.label_datasetStatus.configure(text="Dataset selected", fg="green")
+                self.label_datasetStatus.configure(text="Dataset selected", fg="dark green")
                 self.createEigenFaceGUI(folder_imageDataSet)
 
         elif value == 2:
@@ -236,7 +233,7 @@ class App(customtkinter.CTk):
             title="Select image to recognize")
             if filename_imageRecognize != "":
                 statusImage = True
-                self.label_imageStatus.configure(text="Image selected", fg="green")
+                self.label_imageStatus.configure(text="Image selected", fg="dark green")
                 global test_img
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
@@ -246,15 +243,15 @@ class App(customtkinter.CTk):
         global folder_imageDataSet
         if value == 1:
             statusDataset = True
-            self.label_datasetStatus.configure(text="Using default dataset", fg="green")
-            self.button_dataSet.configure(state="disabled")
-            if folder_imageDataSet != None:
+            self.label_datasetStatus.configure(text="Using default dataset", fg="dark green")
+            self.button_dataSet.configure(state="disabled", fg_color="dark red")
+            if folder_imageDataSet != None and folder_imageDataSet != "":
                 folder_imageDataSet = None
                 self.createEigenFaceGUI(default_dataset)
         elif value == 0:
             statusDataset = False
-            self.label_datasetStatus.configure(text="Dataset not selected", fg=self.fg_color[0])
-            self.button_dataSet.configure(state="normal")
+            self.label_datasetStatus.configure(text="Dataset not selected", text_color=["gray10", "#DCE4EE"])
+            self.button_dataSet.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
 
     def createEigenFaceGUI(self, folderName):
         self.label_datasetStatus.configure(text="Creating eigenfaces...", fg="light blue")
@@ -264,7 +261,7 @@ class App(customtkinter.CTk):
         end = time.time()
         # fungsi eigen argumen = filename_imageDataSet
         time_elapsed = end - start
-        self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="green")
+        self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="dark green")
 
     # num_of_click = 0
     def imageWebcam(self):
@@ -332,8 +329,8 @@ class App(customtkinter.CTk):
                 result_image = Image.fromarray(result_image)
                 result_image = ImageTk.PhotoImage(image = result_image)
                 self.image_imageResult.configure(image=result_image)
-                self.label_resultName.configure(text=nama[idx], fg="green")
-                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="green")
+                self.label_resultName.configure(text=nama[idx], fg="dark green")
+                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="dark green")
         else:
             tkinter.messagebox.showerror("Error", "Please select dataset and image to recognize")
 
