@@ -19,6 +19,7 @@ E = np.load('src/E.npy')
 Y = np.load('src/Y.npy')
 D = np.load('src/D.npy')
 dataset_raw = np.load('src/dataset_raw.npy')
+default_dataset = "dataset"
 
 
 class App(customtkinter.CTk):
@@ -29,8 +30,12 @@ class App(customtkinter.CTk):
     click = 0
     global webcamStatus
     webcamStatus = False
-    global defaultDataSet
-    defaultDataSet = True
+    global folder_imageDataSet, filename_imageRecognize
+    folder_imageDataSet = None
+    filename_imageRecognize = None
+    global statusImage, statusDataset
+    statusImage = False
+    statusDataset = False
 
     def __init__(self):
         super().__init__()
@@ -58,63 +63,68 @@ class App(customtkinter.CTk):
         # ============ frame_left ============
 
         # configure grid layout (12x1)
-        self.frame_left.grid_rowconfigure(0, minsize=100)    # empty row with minsize as spacing
-        self.frame_left.grid_rowconfigure((1,4,5), weight=0)  
-        self.frame_left.grid_rowconfigure(3, minsize=100)    # empty row with minsize as spacing
-        self.frame_left.grid_rowconfigure(7, minsize=100)    # empty row with minsize as spacing
+        self.frame_left.grid_rowconfigure(0, minsize=10)    # empty row with minsize as spacing
+        self.frame_left.grid_rowconfigure((1,4,5,8,9), weight=1)  
+        self.frame_left.grid_rowconfigure(3, minsize=50)    # empty row with minsize as spacing
+        self.frame_left.grid_rowconfigure(5, minsize=20)    # empty row with minsize as spacing
+        self.frame_left.grid_rowconfigure(7, minsize=50)    # empty row with minsize as spacing
         self.frame_left.grid_rowconfigure(10, minsize=100)    # empty row with minsize as spacing
+        self.frame_left.grid_rowconfigure((11), weight=1)  
+        self.frame_left.grid_rowconfigure(13, minsize=50)    # empty row with minsize as spacing
+
+
+        self.switch_dataSet = customtkinter.CTkSwitch(master=self.frame_left,
+                                                        text="Use Default Dataset", 
+                                                        text_font=("Roboto Medium", -16),
+                                                        command=lambda: self.useDefaultDataSet(self.switch_dataSet.get()))
+        self.switch_dataSet.grid(row=1, column=0, columnspan = 1, padx=10, pady=50)
 
         self.label_dataSet = customtkinter.CTkLabel(master=self.frame_left,
                                               text="Insert Your DataSet",
                                               text_font=("Roboto Medium", -16)) 
-        self.label_dataSet.grid(row=1, column=0,  pady=5, padx=70)
+        self.label_dataSet.grid(row=2, column=0 , pady=5, padx=10)
 
         self.button_dataSet = customtkinter.CTkButton(master=self.frame_left,
                                                 text="Choose File",
                                                 command=lambda: self.chooseFile(1))
-        self.button_dataSet.grid(row=2, column=0, pady=5, padx=10)
+        self.button_dataSet.grid(row=3, column=0, pady=5, padx=10)
 
         self.label_datasetStatus = customtkinter.CTkLabel(master=self.frame_left,
                                                 text="Dataset not selected",
                                                 text_font=("Roboto Medium", -16),
                                                 fg="red")
-        self.label_datasetStatus.grid(row=3, column=0, pady=10, padx=10)
+        self.label_datasetStatus.grid(row=4, column=0, pady=10, padx=10)
 
         self.label_insertImage = customtkinter.CTkLabel(master=self.frame_left,
                                               text="Insert Your Image",
                                               text_font=("Roboto Medium", -16)) 
-        self.label_insertImage.grid(row=5, column=0,  pady=5, padx=70)
+        self.label_insertImage.grid(row=6, column=0,  pady=5, padx=10)
 
         self.button_insertImage = customtkinter.CTkButton(master=self.frame_left,
                                                 text="Choose File",
                                                 command=lambda: self.chooseFile(2))
-        self.button_insertImage.grid(row=6, column=0, pady=5, padx=10)
+        self.button_insertImage.grid(row=7, column=0, pady=5, padx=10)
 
         self.label_imageStatus = customtkinter.CTkLabel(master=self.frame_left,
                                                 text="Image not selected",  
                                                 text_font=("Roboto Medium", -16),
                                                 fg="red")
-        self.label_imageStatus.grid(row=7, column=0, pady=10, padx=10)
+        self.label_imageStatus.grid(row=8, column=0, pady=10, padx=10)
 
         self.button_compare = customtkinter.CTkButton(master=self.frame_left,
                                                 text="Compare",
                                                 command=self.showImage)
-        self.button_compare.grid(row=9, column=0, pady=5, padx=10)
-
-        self.button_defaultDataSet = customtkinter.CTkButton(master=self.frame_left,
-                                                text="Use default Dataset",
-                                                command=self.useDefault)
-        self.button_defaultDataSet.grid(row=10, column=0, pady=5, padx=10)
+        self.button_compare.grid(row=10, column=0, pady=5, padx=10)
 
         self.label_webcam = customtkinter.CTkLabel(master=self.frame_left,
                                                     text="Webcam",
                                                     text_font=("Roboto Medium", -16))  
-        self.label_webcam.grid(row=11, column=0, pady=5, padx=70)
+        self.label_webcam.grid(row=11, column=0, pady=5, padx=70,sticky='s')
 
         self.button_webcam = customtkinter.CTkButton(master=self.frame_left,
                                                 text="Start webcam",
                                                 command=self.imageWebcam)
-        self.button_webcam.grid(row=12, column=0, pady=5, padx=10)
+        self.button_webcam.grid(row=12, column=0, pady=5, padx=10, sticky='s')
 
         # ============ frame_right ============
 
@@ -139,7 +149,9 @@ class App(customtkinter.CTk):
         self.frame_imageResult = customtkinter.CTkFrame(master=self.frame_right)
         self.frame_imageResult.grid(row=1, column=1, columnspan=1, rowspan=3, pady=20, padx=20, sticky="nsew")
 
-        self.frame_result = customtkinter.CTkFrame(master=self.frame_right)
+        self.frame_result = customtkinter.CTkFrame(master=self.frame_right,
+                                                    highlightbackground="white",
+                                                    highlightthickness=1)
         self.frame_result.grid(row=3, column=0,rowspan=2, columnspan=2, pady=50, padx=50, sticky="s")
         
 
@@ -204,13 +216,14 @@ class App(customtkinter.CTk):
     def chooseFile(self,value):
         global statusDataset, statusImage
         global folder_imageDataSet, filename_imageRecognize
+        folder_imageDataSet = None
+        filename_imageRecognize = None
         if value == 1:
             statusDataset = False
             folder_imageDataSet = filedialog.askdirectory(
             initialdir=cwd,
             title="Select data set directory")
             if folder_imageDataSet != "":
-                print(folder_imageDataSet)
                 statusDataset = True
                 self.label_datasetStatus.configure(text="Dataset selected", fg="green")
                 self.createEigenFaceGUI(folder_imageDataSet)
@@ -228,8 +241,23 @@ class App(customtkinter.CTk):
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
 
+    def useDefaultDataSet(self, value):
+        global statusDataset, statusImage
+        global folder_imageDataSet
+        if value == 1:
+            statusDataset = True
+            self.label_datasetStatus.configure(text="Using default dataset", fg="green")
+            self.button_dataSet.configure(state="disabled")
+            if folder_imageDataSet != None:
+                folder_imageDataSet = None
+                self.createEigenFaceGUI(default_dataset)
+        elif value == 0:
+            statusDataset = False
+            self.label_datasetStatus.configure(text="Dataset not selected", fg=self.fg_color[0])
+            self.button_dataSet.configure(state="normal")
+
     def createEigenFaceGUI(self, folderName):
-        self.label_datasetStatus.configure(text="Creating eigenfaces...", fg="blue")
+        self.label_datasetStatus.configure(text="Creating eigenfaces...", fg="light blue")
         self.label_datasetStatus.update()
         start = time.time()
         processData.processDataset(folderName)
@@ -238,7 +266,6 @@ class App(customtkinter.CTk):
         time_elapsed = end - start
         self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="green")
 
-        
     # num_of_click = 0
     def imageWebcam(self):
         global click
@@ -292,15 +319,10 @@ class App(customtkinter.CTk):
         img = ImageTk.PhotoImage(img)
         return img
 
-    def useDefault(self):
-        global statusDataset, statusImage
-        statusDataset = True
-        statusImage = True
-        self.label_datasetStatus.configure(text="Dataset selected", fg="green")
-
     def showImage(self):
-        try:
-            if(statusDataset and statusImage):
+        global statusImage
+        global statusDataset
+        if(statusDataset != False and statusImage != False):
                 # result = {dataset, idxhasil}
                 start = time.time()
                 idx = predictFace.predict(filename_imageRecognize, mean, E, Y, D)
@@ -312,7 +334,7 @@ class App(customtkinter.CTk):
                 self.image_imageResult.configure(image=result_image)
                 self.label_resultName.configure(text=nama[idx], fg="green")
                 self.label_timeValue.configure(text=str(round(end-start, 2)), fg="green")
-        except:
+        else:
             tkinter.messagebox.showerror("Error", "Please select dataset and image to recognize")
 
     def on_closing(self, event=0):
