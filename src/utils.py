@@ -53,9 +53,11 @@ def remove_bg(img):
     else :
         return output_image
 
-def read_image(img_dir):
-    rawImage = cv2.imread(img_dir)                 # Read image
-    noBgImage = remove_bg(rawImage)                # Remove background from image
+def read_image(imgIn):
+    if type(imgIn) == str:
+        imgIn = cv2.imread(imgIn)                 # Read image
+    
+    noBgImage = remove_bg(imgIn)                # Remove background from image
     processedImage = crop_image(noBgImage, 256)  # Crop to face and resize it to (256, 256)
     # processedImage = crop_square(noBgImage, 256)   # Crop image and resize it to (256, 256)
     return processedImage.reshape(1,256*256)                # Matrix with shape (1, 256x256)

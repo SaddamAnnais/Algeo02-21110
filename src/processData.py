@@ -16,14 +16,13 @@ def processDataset(folderName):
     for img in path:
         raw_img = cv2.imread(img)
         raw_img = cv2.resize(raw_img, (256, 256))
-        raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
+        # raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
         dataset_raw.append(raw_img)
 
     # Flatvector images
     dataset = []
     nama = []
     for img in path:
-        list_ = []
         # Get the image name
         temp_split_name = img.split("/")
         new_temp_split_name = []
@@ -43,8 +42,8 @@ def processDataset(folderName):
         mean = np.add(mean, dataset[i])
     mean = np.divide(mean, len(dataset)).astype(np.uint8)
 
-    cv2.imshow("mean", mean.reshape((256,256)))
-    cv2.waitKey(0)
+    # cv2.imshow("mean", mean.reshape((256,256)))
+    # cv2.waitKey(0)
 
     # Calculate difference between training image and mean
     M = dataset[0].reshape(256*256,1)
@@ -52,8 +51,8 @@ def processDataset(folderName):
         M = np.append(M, dataset[i].reshape(256*256,1), axis = 1)
     A = (M - mean.T).astype(np.uint8)
 
-    cv2.imshow("Normalised", A[:,0].reshape((256,256)))
-    cv2.waitKey(0)
+    # cv2.imshow("Normalised", A[:,0].reshape((256,256)))
+    # cv2.waitKey(0)
 
     # Calculate eigen values and eigen vectors of covariant matrix
     ## Since covariant = A @ AT that have a shape of (256*256, 256*256), not computationally efficient 
@@ -91,12 +90,12 @@ def processDataset(folderName):
     # Calculating weight of train image
     Y = E.T @ A
 
-    cv2.imshow("Eigface1", E[:,0].reshape(256,256))
-    cv2.imshow("Eigface2", E[:,2].reshape(256,256))
-    cv2.imshow("Eigface3", E[:,3].reshape(256,256))
-    cv2.imshow("Eigface-2", E[:,D-2].reshape(256,256))
-    cv2.imshow("Eigface-1", E[:,D-1].reshape(256,256))
-    cv2.waitKey(0)
+    # cv2.imshow("Eigface1", E[:,0].reshape(256,256))
+    # cv2.imshow("Eigface2", E[:,2].reshape(256,256))
+    # cv2.imshow("Eigface3", E[:,3].reshape(256,256))
+    # cv2.imshow("Eigface-2", E[:,D-2].reshape(256,256))
+    # cv2.imshow("Eigface-1", E[:,D-1].reshape(256,256))
+    # cv2.waitKey(0)
 
     # Calculating weight of train image
     Y = E.T @ A

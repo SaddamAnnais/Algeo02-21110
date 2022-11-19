@@ -8,6 +8,7 @@ import predictFace
 import numpy as np
 import time
 import processData 
+from  utils import *
 
 customtkinter.set_appearance_mode("Dark") 
 customtkinter.set_default_color_theme("blue")  
@@ -222,7 +223,12 @@ class App(customtkinter.CTk):
             title="Select data set directory")
             if folder_imageDataSet != "":
                 statusDataset = True
-                self.label_datasetStatus.configure(text="Dataset selected", fg="dark green")
+                self.label_datasetStatus.configure(text="Dataset selected", fg="light green")
+                self.label_imageStatus.configure(text="")
+                self.image_imageResult.configure(image=self.default_img)
+                self.image_imageTest.configure(image=self.default_img)
+                self.label_resultName.configure(text="")
+                self.label_timeValue.configure(text="")
                 self.createEigenFaceGUI(folder_imageDataSet)
 
         elif value == 2:
@@ -233,7 +239,7 @@ class App(customtkinter.CTk):
             title="Select image to recognize")
             if filename_imageRecognize != "":
                 statusImage = True
-                self.label_imageStatus.configure(text="Image selected", fg="dark green")
+                self.label_imageStatus.configure(text="Image selected", fg="light green")
                 global test_img
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
@@ -243,11 +249,14 @@ class App(customtkinter.CTk):
         global folder_imageDataSet
         if value == 1:
             statusDataset = True
-            self.label_datasetStatus.configure(text="Using default dataset", fg="dark green")
+            self.label_datasetStatus.configure(text="Using default dataset", fg="light green")
             self.button_dataSet.configure(state="disabled", fg_color="dark red")
-            if folder_imageDataSet != None and folder_imageDataSet != "":
-                folder_imageDataSet = None
-                self.createEigenFaceGUI(default_dataset)
+            self.label_imageStatus.configure(text="")
+            self.image_imageResult.configure(image=self.default_img)
+            self.image_imageTest.configure(image=self.default_img)
+            self.label_resultName.configure(text="")
+            self.label_timeValue.configure(text="")
+            self.createEigenFaceGUI(default_dataset)
         elif value == 0:
             statusDataset = False
             self.label_datasetStatus.configure(text="Dataset not selected", text_color=["gray10", "#DCE4EE"])
@@ -261,7 +270,7 @@ class App(customtkinter.CTk):
         end = time.time()
         # fungsi eigen argumen = filename_imageDataSet
         time_elapsed = end - start
-        self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="dark green")
+        self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="light green")
 
     # num_of_click = 0
     def imageWebcam(self):
@@ -270,10 +279,12 @@ class App(customtkinter.CTk):
         click += 1
         if click % 2 == 1:
             webcamStatus = True
+            self.button_webcam.configure(text="Close Webcam")
             global cap
             cap = cv2.VideoCapture(0)
             self.frame()
-            self.button_webcam.configure(text="Close Webcam")
+                
+            
         else:
             webcamStatus = False
             self.button_webcam.configure(text="Start Webcam")
@@ -301,14 +312,30 @@ class App(customtkinter.CTk):
         self.frame()
 
     def frame(self):
-        # Get the latest frame and convert into Image
-        cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(cv2image)
-        # Convert image to PhotoImage
-        imgtk = ImageTk.PhotoImage(image = img.resize((256,256)))
-        self.image_imageTest.configure(image=imgtk)
-        # Repeat after an interval to capture continiously
-        # self.image_imageTest.after(10,self.frame())
+        wait = 0
+        while True:
+            # cv2.imshow('frame', cap.read()[1])
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            wait += 1
+            fromCam = cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+            cropped = crop_image(fromCam, 256)
+            img = Image.fromarray(cropped, mode="RGB")
+            imgtk = ImageTk.PhotoImage(image = img.resize((256,256)))
+            self.image_imageTest.configure(image=imgtk)                    
+            if wait % 40 == 0:
+                start = time.time()
+                idx = predictFace.predict(cap.read()[1], mean, E, Y, D)
+                global result_image 
+                result_image = dataset_raw[idx]
+                result_image = Image.fromarray(result_image, mode = "RGB")
+                result_image = ImageTk.PhotoImage(image = result_image)
+                self.image_imageResult.configure(image=result_image)
+                self.label_resultName.configure(text=nama[idx], fg="light green")
+                end = time.time()
+                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="light green")
+            self.update()
+        
 
     def loadImage(self,img_dir,img_size):
         img = Image.open(img_dir)
@@ -323,14 +350,14 @@ class App(customtkinter.CTk):
                 # result = {dataset, idxhasil}
                 start = time.time()
                 idx = predictFace.predict(filename_imageRecognize, mean, E, Y, D)
-                end = time.time()
                 global result_image 
                 result_image = dataset_raw[idx]
-                result_image = Image.fromarray(result_image)
+                result_image = Image.fromarray(result_image, mode = "RGB")
                 result_image = ImageTk.PhotoImage(image = result_image)
                 self.image_imageResult.configure(image=result_image)
-                self.label_resultName.configure(text=nama[idx], fg="dark green")
-                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="dark green")
+                self.label_resultName.configure(text=nama[idx], fg="light green")
+                end = time.time()
+                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="light green")
         else:
             tkinter.messagebox.showerror("Error", "Please select dataset and image to recognize")
 
