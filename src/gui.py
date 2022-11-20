@@ -46,6 +46,7 @@ class App(customtkinter.CTk):
         self.protocol("WM_DELETE_WINDOW", self.on_closing)  
 
         self.default_img = self.loadImage("src/images/default.jpg", 256)
+        self.sad_img = self.loadImage("src/images/sad.jpg", 256)
 
         # ============ create two frames ============
 
@@ -294,6 +295,8 @@ class App(customtkinter.CTk):
         if click % 2 == 1 and statusDataset:
             self.disabledAllButton()
             webcamStatus = True
+            self.label_resultName.configure(text="")
+            self.label_timeValue.configure(text="")
             self.button_webcam.configure(text="Close Webcam")
             global cap
             cap = cv2.VideoCapture(0)
@@ -314,7 +317,7 @@ class App(customtkinter.CTk):
 
     def frame(self):
         wait = 0
-        while True:
+        while webcamStatus:
             # cv2.imshow('frame', cap.read()[1])
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -353,14 +356,21 @@ class App(customtkinter.CTk):
                 # result = {dataset, idxhasil}
                 start = time.time()
                 idx = predictFace.predict(filename_imageRecognize, mean, E, Y, D)
-                global result_image 
-                result_image = dataset_raw[idx]
-                result_image = Image.fromarray(result_image, mode = "RGB")
-                result_image = ImageTk.PhotoImage(image = result_image)
-                self.image_imageResult.configure(image=result_image)
-                self.label_resultName.configure(text=nama[idx], fg="light green")
-                end = time.time()
-                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="light green")
+                if idx != -1:
+                    global result_image 
+                    result_image = dataset_raw[idx]
+                    result_image = Image.fromarray(result_image, mode = "RGB")
+                    result_image = ImageTk.PhotoImage(image = result_image)
+                    self.image_imageResult.configure(image=result_image)
+                    self.label_resultName.configure(text=nama[idx], fg="light green")
+                    print(nama[idx])
+                    end = time.time()
+                    self.label_timeValue.configure(text=str(round(end-start, 2)), fg="light green")
+                else:
+                    self.image_imageResult.configure(image=self.sad_img)
+                    self.label_resultName.configure(text="Can't recognize face", fg="red")
+                    end = time.time()
+                    self.label_timeValue.configure(text=str(round(end-start, 2)), fg="red")
         else:
             tkinter.messagebox.showerror("Error", "Please select dataset and image to recognize")
 

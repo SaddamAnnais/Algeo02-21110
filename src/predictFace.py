@@ -30,9 +30,12 @@ def predict(dirGambar, mean, E, Y, D):
         if selisih > tempSelisih :
             idxHasil = i
             selisih = tempSelisih
-            # print(selisih)
- 
-    return idxHasil
+            print(selisih)
+    print()        
+    if selisih>=800000:
+        return -1    
+    else :
+        return idxHasil
 
 # if __name__ == "__main__":
 #     predict("test\Emma Watson88_2041.jpg", mean, E, Y, D, dataset, nama)
