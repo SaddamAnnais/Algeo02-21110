@@ -272,44 +272,42 @@ class App(customtkinter.CTk):
         time_elapsed = end - start
         self.label_datasetStatus.configure(text=f"Eigenfaces created\n Time elapsed: {round(time_elapsed,2)}", fg="light green")
 
+    def disabledAllButton(self):
+        self.button_dataSet.configure(state="disabled", fg_color="dark red")
+        self.switch_dataSet.configure(state="disabled", fg_color="dark red")
+        self.button_insertImage.configure(state="disabled", fg_color="dark red")
+        self.button_compare.configure(state="disabled", fg_color="dark red")
+    
+    def enabledAllButton(self):
+        # self.button_dataSet.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
+        self.switch_dataSet.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
+        self.button_insertImage.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
+        self.button_compare.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
+
     # num_of_click = 0
     def imageWebcam(self):
         global click
         global webcamStatus
+        global statusDataset
         click += 1
-        if click % 2 == 1:
+        if click % 2 == 1 and statusDataset:
+            self.disabledAllButton()
             webcamStatus = True
             self.button_webcam.configure(text="Close Webcam")
             global cap
             cap = cv2.VideoCapture(0)
             self.frame()
-                
-            
-        else:
+        elif click % 2 == 0 and statusDataset:
+            self.enabledAllButton()
             webcamStatus = False
             self.button_webcam.configure(text="Start Webcam")
             cap.release()
             self.image_imageTest.configure(image=self.default_img)
+        else:
+            click = 0
+            tkinter.messagebox.showerror("Error", "Please select dataset first")
 
-    def webcam(self):
-        global window
-        window = customtkinter.CTkToplevel(self)
-        window.geometry("800x600")
-        # create label on CTkToplevel window
-        global cam
-        cam = customtkinter.CTkLabel(window, text="")
-        cam.pack(side="top", expand=True, padx=40, pady=40)
-        global cap
-        cap = cv2.VideoCapture(1)
-        self.webcam_close = customtkinter.CTkButton(master=window,
-                                                    text="Close webcam",
-                                                    command=self.webcam_close)
-        self.webcam_close.pack(side="right", expand=True, padx=40, pady=40)
-        self.webcam_start = customtkinter.CTkButton(master=window,
-                                                    text="Start webcam",
-                                                    command=self.webcam_start)
-        self.webcam_start.pack(side="left", expand=True, padx=40, pady=40)
-        self.frame()
+
 
     def frame(self):
         wait = 0
