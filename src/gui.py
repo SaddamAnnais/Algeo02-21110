@@ -319,8 +319,8 @@ class App(customtkinter.CTk):
         wait = 0
         while webcamStatus:
             # cv2.imshow('frame', cap.read()[1])
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
             wait += 1
             if cap.read()[0]:
                 fromCam = cv2.cvtColor(cv2.flip(cap.read()[1], 1),cv2.COLOR_BGR2RGB)
