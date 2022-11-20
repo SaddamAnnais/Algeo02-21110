@@ -35,9 +35,9 @@ def getEigen(matrix, tolerance):
         currentDiag = np.diagonal(E)
 
         if count % 200 == 0:
-            print(count)
+            print("Number of current loops: ",count)
         if np.allclose(prevDiag, currentDiag, atol=tolerance) or count == 4000 :
-            print(count)
+            print("Number of loops to get eigenvalue and eigenvector: ", count)
             # print(E)
             break
     return currentDiag, v

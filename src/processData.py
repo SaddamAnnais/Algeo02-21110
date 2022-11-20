@@ -16,7 +16,7 @@ def processDataset(folderName):
     for img in path:
         raw_img = cv2.imread(img)
         raw_img = cv2.resize(raw_img, (256, 256))
-        # raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
+        raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
         dataset_raw.append(raw_img)
 
     # Flatvector images
@@ -59,7 +59,7 @@ def processDataset(folderName):
     ## We first compute AT @ A that have a shape of (M, M) M : Number of sample in dataset
     ## After that we need to compute A @ eigvec to get the largest M eigenvectors of covariant
     cov = np.cov(A.T)
-    eigval, eigvec = np.linalg.eig(cov)
+    eigval, eigvec = getEigen(cov, 0.1)
     # eigval, eigvec = np.linalg.eig(A.T @ A)
     eigvec = A @ eigvec
 

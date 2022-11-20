@@ -243,6 +243,7 @@ class App(customtkinter.CTk):
                 global test_img
                 test_img = self.loadImage(filename_imageRecognize, 256)
                 self.image_imageTest.configure(image=test_img)
+                self.image_imageResult.configure(image=self.default_img)
 
     def useDefaultDataSet(self, value):
         global statusDataset, statusImage
@@ -274,13 +275,13 @@ class App(customtkinter.CTk):
 
     def disabledAllButton(self):
         self.button_dataSet.configure(state="disabled", fg_color="dark red")
-        self.switch_dataSet.configure(state="disabled", fg_color="dark red")
+        self.switch_dataSet.configure(state="disabled")
         self.button_insertImage.configure(state="disabled", fg_color="dark red")
         self.button_compare.configure(state="disabled", fg_color="dark red")
     
     def enabledAllButton(self):
         # self.button_dataSet.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
-        self.switch_dataSet.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
+        self.switch_dataSet.configure(state="normal")
         self.button_insertImage.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
         self.button_compare.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
 
@@ -296,6 +297,7 @@ class App(customtkinter.CTk):
             self.button_webcam.configure(text="Close Webcam")
             global cap
             cap = cv2.VideoCapture(0)
+            self.image_imageResult.configure(image=self.default_img)
             self.frame()
         elif click % 2 == 0 and statusDataset:
             self.enabledAllButton()
@@ -303,6 +305,7 @@ class App(customtkinter.CTk):
             self.button_webcam.configure(text="Start Webcam")
             cap.release()
             self.image_imageTest.configure(image=self.default_img)
+            self.image_imageResult.configure(image=self.default_img)
         else:
             click = 0
             tkinter.messagebox.showerror("Error", "Please select dataset first")
@@ -316,23 +319,25 @@ class App(customtkinter.CTk):
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             wait += 1
-            fromCam = cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
-            cropped = crop_image(fromCam, 256)
-            img = Image.fromarray(cropped, mode="RGB")
-            imgtk = ImageTk.PhotoImage(image = img.resize((256,256)))
-            self.image_imageTest.configure(image=imgtk)                    
-            if wait % 40 == 0:
-                start = time.time()
-                idx = predictFace.predict(cap.read()[1], mean, E, Y, D)
-                global result_image 
-                result_image = dataset_raw[idx]
-                result_image = Image.fromarray(result_image, mode = "RGB")
-                result_image = ImageTk.PhotoImage(image = result_image)
-                self.image_imageResult.configure(image=result_image)
-                self.label_resultName.configure(text=nama[idx], fg="light green")
-                end = time.time()
-                self.label_timeValue.configure(text=str(round(end-start, 2)), fg="light green")
-            self.update()
+            if cap.read()[0]:
+                fromCam = cv2.cvtColor(cv2.flip(cap.read()[1], 1),cv2.COLOR_BGR2RGB)
+                cropped = crop_image(fromCam, 256)
+                img = Image.fromarray(cropped, mode="RGB")
+                imgtk = ImageTk.PhotoImage(image = img.resize((256,256)))
+                self.image_imageTest.configure(image=imgtk)                    
+                if wait % 40 == 0:
+                    start = time.time()
+                    idx = predictFace.predict(cap.read()[1], mean, E, Y, D)
+                    global result_image 
+                    result_image = dataset_raw[idx]
+                    result_image = Image.fromarray(result_image, mode = "RGB")
+                    result_image = ImageTk.PhotoImage(image = result_image)
+                    self.image_imageResult.configure(image=result_image)
+                    print(nama[idx])
+                    self.label_resultName.configure(text=nama[idx], fg="light green")
+                    end = time.time()
+                    self.label_timeValue.configure(text=str(round(end-start, 2)), fg="light green")
+                self.update()
         
 
     def loadImage(self,img_dir,img_size):

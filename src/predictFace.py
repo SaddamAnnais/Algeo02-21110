@@ -30,7 +30,7 @@ def predict(dirGambar, mean, E, Y, D):
         if selisih > tempSelisih :
             idxHasil = i
             selisih = tempSelisih
-            print(selisih)
+            # print(selisih)
  
     return idxHasil
 
