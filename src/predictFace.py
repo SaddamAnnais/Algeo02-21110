@@ -32,7 +32,7 @@ def predict(dirGambar, mean, E, Y, D):
             selisih = tempSelisih
             print(selisih)
     print()        
-    if selisih>=800000:
+    if selisih>=700000:
         return -1    
     else :
         return idxHasil

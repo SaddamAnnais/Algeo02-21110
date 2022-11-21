@@ -46,7 +46,7 @@ def remove_bg(img):
     mask = results.segmentation_mask
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     conditionMask = mask > 0.5
-    bg_image = np.zeros(shape=(img.shape[0],img.shape[1]))
+    bg_image = np.zeros(shape=(img.shape[0],img.shape[1]))+255
     output_image = np.where(conditionMask,img,bg_image).astype(np.uint8)
     if (output_image == bg_image).all():
         return img

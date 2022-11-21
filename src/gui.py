@@ -20,7 +20,7 @@ E = np.load('src/E.npy')
 Y = np.load('src/Y.npy')
 D = np.load('src/D.npy')
 dataset_raw = np.load('src/dataset_raw.npy')
-default_dataset = "dataset"
+default_dataset = "test"
 
 
 class App(customtkinter.CTk):
@@ -276,13 +276,13 @@ class App(customtkinter.CTk):
 
     def disabledAllButton(self):
         self.button_dataSet.configure(state="disabled", fg_color="dark red")
-        self.switch_dataSet.configure(state="disabled")
         self.button_insertImage.configure(state="disabled", fg_color="dark red")
         self.button_compare.configure(state="disabled", fg_color="dark red")
     
     def enabledAllButton(self):
         # self.button_dataSet.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
         self.switch_dataSet.configure(state="normal")
+        self.button_dataSet.configure(state="disabled", fg_color=["#3B8ED0", "#1F6AA5"])
         self.button_insertImage.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
         self.button_compare.configure(state="normal", fg_color=["#3B8ED0", "#1F6AA5"])
 

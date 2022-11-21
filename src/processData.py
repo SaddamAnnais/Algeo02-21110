@@ -39,11 +39,11 @@ def processDataset(folderName):
     # Calculate mean
     mean = np.zeros(shape=(1,256*256))
     for i in range(0, len(dataset)):
-        mean = np.add(mean, dataset[i])
-    mean = np.divide(mean, len(dataset)).astype(np.uint8)
+        mean = mean + dataset[i].reshape(1, 256*256)
+    mean = (mean / len(dataset)).astype(np.uint8)
 
-    cv2.imshow("mean", mean.reshape((256,256)))
-    cv2.waitKey(0)
+    # cv2.imshow("mean", mean.reshape((256,256)))
+    # cv2.waitKey(0)
 
     # Calculate difference between training image and mean
     M = dataset[0].reshape(256*256,1)
@@ -58,10 +58,13 @@ def processDataset(folderName):
     ## Since covariant = A @ AT that have a shape of (256*256, 256*256), not computationally efficient 
     ## We first compute AT @ A that have a shape of (M, M) M : Number of sample in dataset
     ## After that we need to compute A @ eigvec to get the largest M eigenvectors of covariant
+    # cov = A.T @ A
     cov = np.cov(A.T)
-    eigval, eigvec = getEigen(cov, 0.1)
-    # eigval, eigvec = np.linalg.eig(A.T @ A)
-    eigvec = A @ eigvec
+    # for i in range(cov.shape[1]):
+    #     cov[:,i] = normalize(cov[:,i])
+    # eigval, eigvec = getEigen(cov, (0.1)**3)
+    eigval, eigvec = np.linalg.eig(cov)
+    eigvec = np.real(A @ eigvec)
 
     ## 90 % of the total variance of eigenvectors contain in the first 10% of the largest corresponding eigenvalue
     ## Because of that, we need to sort the eigenvalues and eigenvectors
@@ -103,13 +106,13 @@ def processDataset(folderName):
     D = np.array([D])
     print("Training is completed")
 
-    np.save('src/Y.npy', Y)
-    np.save('src/E.npy', E)
-    np.save('src/nama.npy', nama)
-    np.save('src/dataset.npy', dataset)
-    np.save('src/mean.npy', mean)
-    np.save('src/D.npy', D)
-    np.save('src/dataset_raw.npy', dataset_raw)
+    # np.save('src/Y.npy', Y)
+    # np.save('src/E.npy', E)
+    # np.save('src/nama.npy', nama)
+    # np.save('src/dataset.npy', dataset)
+    # np.save('src/mean.npy', mean)
+    # np.save('src/D.npy', D)
+    # np.save('src/dataset_raw.npy', dataset_raw)
 
 if __name__ == "__main__":
     processDataset("dataset")
