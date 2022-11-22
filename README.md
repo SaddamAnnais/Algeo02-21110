@@ -2,9 +2,9 @@
 
 Kelompok 22 NNN:
 
-- 13521110  Yanuar Sano Nur Rasyid
-- 13521121  Saddam Annais Shaquille
-- 13521150  I Putu Bakta Hari Sudewa
+- 13521110 Yanuar Sano Nur Rasyid
+- 13521121 Saddam Annais Shaquille
+- 13521150 I Putu Bakta Hari Sudewa
 
 ## Tugas Besar Algeo 2 - Eigenface
 
@@ -23,7 +23,7 @@ Kelompok 22 NNN:
   - [Screenshots](#screenshots)
   - [Project Status](#project-status)
   - [Room for Improvement](#room-for-improvement)
-<!-- * [License](#license) -->
+  <!-- * [License](#license) -->
 
 ## Setup
 
@@ -58,7 +58,7 @@ Cara memulai aplikasi
 
 3. Masukan folder dataset atau gunakan default dataset, masukan gambar yang akan dibandingkan, kemudian klik compare
 
-![contoh penggunaan](./img/contoh.png)
+![contoh penggunaan](./src/images/img/contoh.png)
 
 ## General Information
 
@@ -83,7 +83,7 @@ Program pengenalan wajah melibatkan kumpulan citra wajah yang sudah disimpan pad
 
 ## Screenshots
 
-![screenshot1](./img/screenshot1.png)
+![screenshot1](./src/images/img/screenshot1.png)
 
 <!-- If you have screenshots you'd like to share, include them here. -->
 
