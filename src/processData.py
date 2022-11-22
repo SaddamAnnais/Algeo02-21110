@@ -62,8 +62,8 @@ def processDataset(folderName):
     cov = np.cov(A.T)
     # for i in range(cov.shape[1]):
     #     cov[:,i] = normalize(cov[:,i])
-    # eigval, eigvec = getEigen(cov, (0.1)**3)
-    eigval, eigvec = np.linalg.eig(cov)
+    eigval, eigvec = getEigen(cov, (0.05))
+    # eigval, eigvec = np.linalg.eig(cov)
     eigvec = np.real(A @ eigvec)
 
     ## 90 % of the total variance of eigenvectors contain in the first 10% of the largest corresponding eigenvalue

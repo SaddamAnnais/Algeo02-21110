@@ -2,9 +2,9 @@
 
 Kelompok 22 NNN:
 
-- 13521110 Yanuar Sano Nur Rasyid
-- 13521121 Saddam Annais Shaquille
-- 13521150 I Putu Bakta Hari Sudewa
+- [13521110 Yanuar Sano Nur Rasyid](https://github.com/yansans)
+- [13521121 Saddam Annais Shaquille](https://github.com/SaddamAnnais)
+- [13521150 I Putu Bakta Hari Sudewa](https://github.com/sozyGithub)
 
 ## Tugas Besar Algeo 2 - Eigenface
 
