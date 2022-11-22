@@ -93,12 +93,12 @@ def processDataset(folderName):
     # Calculating weight of train image
     Y = E.T @ A
 
-    cv2.imshow("Eigface1", E[:,0].reshape(256,256))
-    cv2.imshow("Eigface2", E[:,2].reshape(256,256))
-    cv2.imshow("Eigface3", E[:,3].reshape(256,256))
-    cv2.imshow("Eigface-2", E[:,D-2].reshape(256,256))
-    cv2.imshow("Eigface-1", E[:,D-1].reshape(256,256))
-    cv2.waitKey(0)
+    # cv2.imshow("Eigface1", E[:,0].reshape(256,256))
+    # cv2.imshow("Eigface2", E[:,2].reshape(256,256))
+    # cv2.imshow("Eigface3", E[:,3].reshape(256,256))
+    # cv2.imshow("Eigface-2", E[:,D-2].reshape(256,256))
+    # cv2.imshow("Eigface-1", E[:,D-1].reshape(256,256))
+    # cv2.waitKey(0)
 
     # Calculating weight of train image
     Y = E.T @ A
